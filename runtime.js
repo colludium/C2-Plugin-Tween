@@ -409,7 +409,7 @@ cr.behaviors.Tween = function(runtime)
 		this.progress = 0;
 		this.duration = 0;
 		this.initialProfile = 0; // take initial setup, for restart, 0 = run once, 1 = ping pong, 2 = ping pong indef
-		this.currentProfile = 0;
+		this.currentProfile = 0; // 0 = run once, 1 = ping pong stop, 2 = ping pong repeat
 		this.runDirection = 1; // 1 = forwards, -1 = reverse
 		this.ctrlA = 0;
 		this.ctrlB = 0;
@@ -478,48 +478,51 @@ cr.behaviors.Tween = function(runtime)
 			{
 				this.tweenNow = this.doTween(this.tweenType, this.timeNow, this.tweenStart, this.tweenEnd - this.tweenStart, this.duration, 0, 0, 0);
 			}
-		}
-		
-		if (this.currentProfile == 0 && this.progress > 0.99999)
-		{
-			this.tweenNow = this.tweenEnd;
-			this.progress = 1;
-			this.timeNow = 0;
-			this.isTweening = false;
-			this.runtime.trigger(cr.behaviors.Tween.prototype.cnds.onEnd, this.inst);
-		}
-		else if (this.currentProfile > 0)
-		{
-			if (this.runDirection == 1 && this.progress > 0.999999)
+
+			if (this.currentProfile == 0) // run once
 			{
-				this.tweenNow = this.tweenEnd;
-				this.progress = 1;
-				this.runDirection = -1;
-				this.timeNow = this.duration;
-				this.currentProfile = this.initialProfile;
-				this.runtime.trigger(cr.behaviors.Tween.prototype.cnds.onEnd, this.inst);
-			}
-			else if (this.runDirection == -1 && this.progress < 0.000001)
-			{
-				this.progress = 0;
-				this.runDirection = 1;
-				this.tweenNow = this.tweenStart;
-				this.timeNow = 0;
-	
-				if (this.currentProfile ==  1)
+				if (this.progress > 0.99999)
 				{
-					this.currentProfile = this.initialProfile;
+					this.tweenNow = this.tweenEnd;
+					this.progress = 1;
+					this.timeNow = 0;
 					this.isTweening = false;
 					this.runtime.trigger(cr.behaviors.Tween.prototype.cnds.onEnd, this.inst);
 				}
-				else if (this.currentProfile ==  2)
+				
+			}
+			else if (this.currentProfile > 0) // ping pong
+			{
+				if (this.runDirection == 1 && this.progress > 0.999999) // end of run in normal direction
 				{
-					this.isTweening = true;
+					this.tweenNow = this.tweenEnd;
+					this.progress = 1;
+					this.runDirection = -1;
+					this.timeNow = this.duration;
+					this.currentProfile = this.initialProfile;
 					this.runtime.trigger(cr.behaviors.Tween.prototype.cnds.onEnd, this.inst);
+				}
+				else if (this.runDirection == -1 && this.progress < 0.000001) // end of run in reverse direction
+				{
+					this.progress = 0;
+					this.runDirection = 1;
+					this.tweenNow = this.tweenStart;
+					this.timeNow = 0;
+		
+					if (this.currentProfile ==  1)
+					{
+						this.currentProfile = this.initialProfile;
+						this.isTweening = false;
+						this.runtime.trigger(cr.behaviors.Tween.prototype.cnds.onEnd, this.inst);
+					}
+					else if (this.currentProfile ==  2)
+					{
+						this.isTweening = true;
+						this.runtime.trigger(cr.behaviors.Tween.prototype.cnds.onEnd, this.inst);
+					}
 				}
 			}
 		}
-
 	};
 
 	/**BEGIN-PREVIEWONLY**/
