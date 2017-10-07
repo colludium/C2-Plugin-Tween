@@ -89,6 +89,7 @@ AddComboParamOption("easeInOutBack");
 AddComboParamOption("easeInBounce");
 AddComboParamOption("easeOutBounce");
 AddComboParamOption("easeInOutBounce");
+AddComboParamOption("linearTween");
 AddComboParam("Tween type.",
 	"The type of tween profile.");
 AddNumberParam("Start value",

@@ -355,6 +355,10 @@ var Bezier = [];
 		if (t < d / 2) return Tween.easeInBounce(t * 2, 0, c, d) * .5 + b;
 		return Tween.easeOutBounce(t * 2 - d, 0, c, d) * .5 + c * .5 + b;
 	};
+	Tween.linearTween = function(t, b, c, d)
+	{
+		return c*t/d + b;
+	};
 }());
 
 
@@ -638,6 +642,9 @@ cr.behaviors.Tween = function(runtime)
 				break;
 			case 29:
 				tweenNow = Tween.easeInOutBounce(t, b, c, d);
+				break;
+			case 30:
+				tweenNow = Tween.linearTween(t, b, c, d);
 				break;
 			default: break;
 		}
